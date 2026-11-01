@@ -1,0 +1,148 @@
+@import "tailwindcss";
+
+/* Tasarım tokenları: ayrıntılar DESIGN.md */
+@theme {
+  --color-glacier: #f5f8fb;
+  --color-glacier-2: #e6edf4;
+  --color-night: #0b1b33;
+  --color-night-2: #13284a;
+  --color-ink: #0b1b33;
+  --color-muted: #52627a;
+  --color-flag: #e2231a;
+  /* Açık zeminde küçük metin/ikon için (AA) */
+  --color-flag-ink: #b5180f;
+  --color-line: #d3dde8;
+  /* Koyu (night) zeminde ikincil metin (AA) */
+  --color-mist: #a9bbd3;
+  --color-piste-green: #1f9d55;
+  --color-piste-blue: #1d5fd1;
+  --color-piste-red: #e2231a;
+  --color-piste-black: #0b0f17;
+
+  --text-title: clamp(2rem, 1.2rem + 3.4vw, 3.5rem);
+  --text-title--line-height: 1.02;
+  --text-lead: clamp(1.0625rem, 1rem + 0.35vw, 1.25rem);
+  --text-lead--line-height: 1.55;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Fontlar layout'ta next/font ile --font-display / --font-sans olarak yüklenir.
+   `inline`: döngüsel :root tanımı üretmez, yardımcı sınıf doğrudan değişkeni okur. */
+@theme inline {
+  --font-display: var(--font-display), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+}
+
+:root {
+  --gutter: clamp(16px, 4vw, 48px);
+  --header-h: 68px;
+  --section-y: clamp(64px, 7vw, 104px);
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: calc(var(--header-h) + 12px);
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: var(--color-glacier);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  line-height: 1.6;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Mobilde alttaki sabit WhatsApp çubuğu için boşluk */
+@media (max-width: 767px) {
+  body {
+    padding-bottom: calc(76px + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+::selection {
+  background: var(--color-flag);
+  color: #fff;
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-piste-blue);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+/* Koyu zeminde odak halkası açık renk */
+.on-night :focus-visible,
+.on-night:focus-visible {
+  outline-color: #fff;
+}
+
+/* Başlık stili: Bricolage Grotesque, sıkı, büyük */
+@utility display {
+  font-family: var(--font-display);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 0.98;
+  text-wrap: balance;
+}
+
+@utility wrap {
+  width: 100%;
+  max-width: 1280px;
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+@utility section-y {
+  padding-block: var(--section-y);
+}
+
+@utility tap {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+/* Pist haritası lejantı: küçük renkli daire işaretleri */
+@utility piste-dot {
+  display: inline-block;
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 9999px;
+  flex-shrink: 0;
+}
+
+/* ---------- Mobil menü ---------- */
+@keyframes menu-in {
+  from { opacity: 0; transform: translate3d(0, -16px, 0); }
+  to { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+@keyframes menu-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+@keyframes menu-item {
+  from { opacity: 0; transform: translate3d(0, 24px, 0); }
+  to { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+.menu-panel[data-state="open"] { animation: menu-in 0.35s var(--ease-out-expo) both; }
+.menu-panel[data-state="closed"] { animation: menu-out 0.2s ease both; }
+.menu-panel[data-state="open"] .menu-item {
+  animation: menu-item 0.55s var(--ease-out-expo) both;
+  animation-delay: calc(var(--i, 0) * 70ms + 120ms);
+}
+
+/* ---------- Azaltılmış hareket ---------- */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .snow-canvas { display: none !important; }
+}
