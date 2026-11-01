@@ -165,7 +165,7 @@ export default function Home() {
             </ButtonLink>
           </Reveal>
           <Reveal className="lg:col-span-7" delay={0.1}>
-            <MapEmbed className="h-[340px] w-full lg:h-full lg:min-h-[420px]" />
+            <MapEmbed className="w-full lg:h-full lg:min-h-[420px]" />
           </Reveal>
         </div>
       </Section>
