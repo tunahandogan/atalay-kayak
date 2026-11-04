@@ -42,3 +42,12 @@ next-env.d.ts
 
 # ekran görüntüleri (npm run screenshots)
 /screenshots/
+
+# yerel araçlar
+/.shots/
+/.taste-skill/
+
+# yerel araclar
+/.shots/
+/.taste-skill/
+

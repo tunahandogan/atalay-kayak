@@ -1,37 +1,30 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { business } from "@/content/business";
+import { ButtonLink } from "@/components/ui/Button";
 import { waLink } from "@/lib/whatsapp";
 
 export const metadata: Metadata = { title: "Sayfa bulunamadı" };
 
 export default function NotFound() {
   return (
-    <main id="icerik" className="bg-glacier text-night">
-      <div className="mx-auto flex min-h-[70svh] max-w-3xl flex-col justify-center px-5 py-24">
-        <p className="font-display text-sm font-semibold uppercase tracking-[0.2em] text-flag-ink">404 · Pist dışı</p>
-        <h1 className="mt-3 font-display text-5xl font-extrabold leading-[0.95] tracking-tight sm:text-7xl">
-          Pistten çıktınız.
-        </h1>
-        <p className="mt-5 max-w-md text-lg text-muted">
-          Aradığınız sayfa yok ya da taşınmış. Ana sayfadan devam edin ya da {business.name} ekibine
-          WhatsApp&apos;tan yazın.
+    <main id="icerik" className="on-night bg-sky text-paper">
+      <div className="wrap flex min-h-[70svh] flex-col justify-center py-20">
+        <h1 className="display text-poster">Pistten çıktınız.</h1>
+        <p className="mt-5 max-w-[46ch] text-lead">
+          Aradığınız sayfa yok ya da taşınmış. Ana sayfadan devam edin ya da {business.name} ekibine WhatsApp&apos;tan
+          yazın.
         </p>
-        <div className="mt-8 flex flex-wrap gap-3">
+        <div className="mt-7 flex flex-wrap gap-2">
           <Link
             href="/"
-            className="rounded-sm bg-flag px-5 py-3 font-semibold text-white transition-colors hover:bg-flag-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-night"
+            className="inline-flex min-h-14 items-center bg-paper px-6 font-display text-[1.5rem] font-extrabold uppercase leading-none text-night"
           >
             Ana sayfaya dön
           </Link>
-          <a
-            href={waLink()}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="rounded-sm border border-night/30 px-5 py-3 font-semibold transition-colors hover:border-flag hover:text-flag-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-night"
-          >
-            WhatsApp&apos;tan yaz
-          </a>
+          <ButtonLink href={waLink()} external>
+            WhatsApp&apos;tan yazın
+          </ButtonLink>
         </div>
       </div>
     </main>

@@ -1,20 +1,21 @@
 import type { Metadata, Viewport } from "next";
-import { Bricolage_Grotesque, Onest } from "next/font/google";
+import { Sofia_Sans, Sofia_Sans_Extra_Condensed } from "next/font/google";
 import { business, site } from "@/content/business";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { WhatsAppBar } from "@/components/WhatsAppBar";
-import { DemoBadge } from "@/components/DemoBadge";
 import { JsonLd } from "@/components/JsonLd";
+import { RentalProvider } from "@/components/RentalContext";
 import "./globals.css";
 
-const display = Bricolage_Grotesque({
+const display = Sofia_Sans_Extra_Condensed({
   subsets: ["latin", "latin-ext"],
+  weight: ["700", "800"],
   display: "swap",
   variable: "--font-display",
 });
 
-const sans = Onest({
+const sans = Sofia_Sans({
   subsets: ["latin", "latin-ext"],
   display: "swap",
   variable: "--font-sans",
@@ -36,7 +37,7 @@ export const metadata: Metadata = {
   formatDetection: { telephone: false },
 };
 
-export const viewport: Viewport = { themeColor: "#0b1b33" };
+export const viewport: Viewport = { themeColor: "#f3f7fa" };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -44,15 +45,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <a
           href="#icerik"
-          className="sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-[100] focus:rounded-sm focus:bg-flag focus:px-4 focus:py-2 focus:font-semibold focus:text-white"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-[100] focus:bg-flag focus:px-4 focus:py-2 focus:font-semibold focus:text-paper"
         >
           İçeriğe geç
         </a>
-        <Header />
-        {children}
+        <RentalProvider>
+          <Header />
+          {children}
+        </RentalProvider>
         <Footer />
         <WhatsAppBar />
-        <DemoBadge />
         <JsonLd />
       </body>
     </html>

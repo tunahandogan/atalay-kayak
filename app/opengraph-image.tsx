@@ -14,12 +14,12 @@ const DEMO = demo.label.toLocaleUpperCase("tr");
 const LINE1 = `Erzurum kayak kiralama · ${business.district}`;
 const LINE2 = "Ekipmanı seçin, WhatsApp'tan fiyat alın";
 
-/** Google Fonts CSS API'den yalnızca gereken glifleri içeren Bricolage Grotesque TTF'i çeker; ağ yoksa null. */
+/** Google Fonts CSS API'den yalnızca gereken glifleri içeren Sofia Sans Extra Condensed TTF'i çeker; ağ yoksa null. */
 async function loadFont(text: string, weight: number): Promise<ArrayBuffer | null> {
   try {
     const glyphs = Array.from(new Set(text)).join("");
     const css = await fetch(
-      `https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@${weight}&text=${encodeURIComponent(glyphs)}`,
+      `https://fonts.googleapis.com/css2?family=Sofia+Sans+Extra+Condensed:wght@${weight}&text=${encodeURIComponent(glyphs)}`,
     ).then((r) => (r.ok ? r.text() : ""));
     const url = /src: url\((.+?)\) format\('(?:truetype|opentype)'\)/.exec(css)?.[1];
     if (!url) return null;
@@ -35,7 +35,7 @@ export default async function Image() {
     loadFont(`${TITLE}${DEMO}`, 800),
     loadFont(`${LINE1}${LINE2}`, 500),
   ]);
-  const family = bold || medium ? "Bricolage Grotesque" : "sans-serif";
+  const family = bold || medium ? "Sofia Sans Extra Condensed" : "sans-serif";
 
   return new ImageResponse(
     (
@@ -105,8 +105,8 @@ export default async function Image() {
     {
       ...size,
       fonts: [
-        ...(bold ? [{ name: "Bricolage Grotesque", data: bold, weight: 800 as const, style: "normal" as const }] : []),
-        ...(medium ? [{ name: "Bricolage Grotesque", data: medium, weight: 500 as const, style: "normal" as const }] : []),
+        ...(bold ? [{ name: "Sofia Sans Extra Condensed", data: bold, weight: 800 as const, style: "normal" as const }] : []),
+        ...(medium ? [{ name: "Sofia Sans Extra Condensed", data: medium, weight: 500 as const, style: "normal" as const }] : []),
       ],
     },
   );

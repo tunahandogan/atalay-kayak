@@ -2,7 +2,7 @@
 
 Erzurum Palandöken'deki kayak kiralama işletmesi için hazırlanmış konsept demo. Ziyaretçi ekipmanı, kişi sayısını, tarihi, seviyeyi ve bot numarasını seçer; hazır mesaj WhatsApp'ta açılır. Form veri toplamaz, hiçbir şey kaydedilmez.
 
-Stack: Next.js 16 (App Router, `cacheComponents`), React 19, Tailwind v4, `motion`, `lucide-react`. Plan: `docs/plan.md`, tasarım kararları: `DESIGN.md`.
+Stack: Next.js 16 (App Router, `cacheComponents`), React 19, Tailwind v4, `lucide-react`. Tasarım kararları: `DESIGN.md`.
 
 ## Çalıştırma
 
@@ -15,9 +15,9 @@ npm run typecheck
 
 ## 15 dakikada başka bir işletmeye uyarlama
 
-1. **`content/business.ts`** tek içerik kaynağıdır (ad, adres, geo, harita, telefon, WhatsApp, saatler, ekipman, seviyeler, adımlar, bot tablosu, yorumlar, SSS, nav, `site`, `demo`). Bileşenler, JSON-LD ve OG görseli bilgiyi yalnızca buradan okur. Doğrulanmamış bilgi için `[DOLDURULACAK: …]` yer tutucusu kullanın; uydurma fiyat veya marka yazmayın.
-2. **Görseller:** `public/images/stok/<anahtar>.jpg` dosyalarını değiştirin (anahtarlar: `hero`, `ski`, `snowboard`, `boots`, `helmet`, `apparel`, `slope`, `shop`, `lift`; her biri ≤ 350 KB, ~1600 px). `content/photos.ts` içinde alt metin, `focal` ve künyeyi güncelleyin. Bir anahtar `null` bırakılırsa bileşenler yedeği gösterir.
-3. **Tokenlar:** renk ve font tokenları `app/globals.css` `@theme` bloğundadır (`glacier`, `night`, `flag`, `piste-*`). Fontlar `app/layout.tsx` içinde `next/font/google` ile yüklenir (`--font-display`: Bricolage Grotesque, `--font-sans`: Onest).
+1. **`content/business.ts`** tek içerik kaynağıdır (ad, adres, geo, harita, telefon, WhatsApp, saatler, ekipman, seviyeler, adımlar, bot tablosu, yorumlar, SSS, nav, `site`, `demo`). Bileşenler, JSON-LD ve OG görseli bilgiyi yalnızca buradan okur. Doğrulanmamış bilgi için `[DOLDURULACAK: …]` yer tutucusu kullanın; ziyaretçi bunu görmez, "WhatsApp'tan sorun" yönlendirmesi görür (`lib/placeholders.ts`). Uydurma fiyat veya marka yazmayın.
+2. **Görseller:** `public/images/stok/<anahtar>.jpg` dosyalarını değiştirin (anahtarlar: `hero`, `ski`, `snowboard`, `boots`, `helmet`, `apparel`, `slope`, `shop`, `lift`; her biri ≤ 350 KB, ~1600 px). `content/photos.ts` içinde alt metin, `focal` ve künyeyi güncelleyin. Bir anahtar `null` bırakılırsa bileşen düz renk gösterir.
+3. **Tokenlar:** renk ve font tokenları `app/globals.css` `@theme` bloğundadır (`glacier`, `night`, `flag`, `sky`, `piste-*`). Fontlar `app/layout.tsx` içinde `next/font/google` ile yüklenir (`--font-display`: Sofia Sans Extra Condensed, `--font-sans`: Sofia Sans). Harita çizimi `node scripts/draw-map.mjs` ile üretilir.
 4. `NEXT_PUBLIC_SITE_URL` değerini ayarlayın (metadataBase, JSON-LD ve OG için).
 
 ## Yayın adımları (Vercel)

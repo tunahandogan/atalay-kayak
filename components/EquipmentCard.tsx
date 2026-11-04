@@ -1,62 +1,48 @@
 import { Photo } from "@/components/Photo";
+import { photos } from "@/content/photos";
 import { equipmentLink } from "@/lib/whatsapp";
 import type { Equipment } from "@/content/business";
 
-export function EquipmentCard({ item, featured = false }: { item: Equipment; featured?: boolean }) {
+const FIELDS = ["bg-night text-paper on-night", "bg-glacier-2 text-ink", "bg-shade text-ink", "bg-sky text-paper on-night"];
+
+export function EquipmentCard({ item, index }: { item: Equipment; index: number }) {
   const hasPrice = item.dailyPrice !== null;
+  const credit = photos[item.photoKey]?.credit;
   return (
-    <article
-      className={`group flex w-full overflow-hidden rounded-2xl border border-line bg-white transition-[transform,box-shadow] duration-300 hover:-translate-y-1 hover:shadow-[0_18px_40px_-20px_rgba(11,27,51,0.35)] motion-reduce:transition-none motion-reduce:hover:translate-y-0 ${
-        featured ? "flex-col md:flex-row" : "flex-col"
-      }`}
-    >
-      <div
-        className={`relative overflow-hidden ${
-          featured ? "aspect-[4/3] md:aspect-auto md:min-h-[22rem] md:w-3/5" : "aspect-[4/3]"
-        }`}
-      >
-        <Photo
-          k={item.photoKey}
-          sizes={featured ? "(min-width: 768px) 45vw, 100vw" : "(min-width: 768px) 30vw, 100vw"}
-          className="absolute inset-0 transition-transform duration-700 ease-out group-hover:scale-105 motion-reduce:transition-none motion-reduce:group-hover:scale-100"
-        />
-        {item.highlight && (
-          <span className="absolute left-3 top-3 rounded-full bg-flag px-3 py-1 text-xs font-bold text-white">
-            {item.highlight}
-          </span>
-        )}
-      </div>
-      <div className={`flex flex-1 flex-col p-5 ${featured ? "md:p-8" : ""}`}>
-        <h3
-          className={`font-display font-extrabold leading-tight tracking-tight text-ink ${
-            featured ? "text-2xl md:text-4xl" : "text-xl"
-          }`}
-        >
-          {item.name}
-        </h3>
-        <dl className="mt-3 space-y-2 text-sm">
+    <article className={`flex flex-col ${FIELDS[index % FIELDS.length]}`}>
+      <Photo k={item.photoKey} sizes="(min-width: 768px) 50vw, 100vw" showCredit={false} className="aspect-[3/2] w-full" />
+      <div className="flex flex-1 flex-col gap-4 p-[var(--gutter)] py-6 md:py-8">
+        <h3 className="display text-[clamp(2.25rem,1.5rem+2.4vw,3.75rem)]">{item.name}</h3>
+        <dl className="grid gap-3 sm:grid-cols-2">
           <div>
-            <dt className="font-bold text-ink">İçerik</dt>
-            <dd className="text-muted">{item.includes}</dd>
+            <dt className="font-semibold">İçerik</dt>
+            <dd>{item.includes}</dd>
           </div>
           <div>
-            <dt className="font-bold text-ink">Kime uygun</dt>
-            <dd className="text-muted">{item.forWho}</dd>
+            <dt className="font-semibold">Kime uygun</dt>
+            <dd>{item.forWho}</dd>
           </div>
         </dl>
-        <div className="mt-auto flex flex-wrap items-center justify-between gap-3 pt-5">
-          <p className="text-sm font-bold text-ink">
-            {hasPrice ? `Günlük ${item.dailyPrice}` : <span className="whitespace-nowrap">Fiyat: Sorulacak</span>}
-          </p>
+        <div className="mt-auto flex flex-wrap items-center justify-between gap-x-4 pt-1">
           <a
             href={equipmentLink(item.id)}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex min-h-11 items-center justify-center rounded-full bg-flag px-5 text-sm font-bold text-white transition-colors hover:bg-flag-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-flag-ink"
+            className="inline-flex min-h-14 items-center justify-center bg-flag px-5 font-semibold text-paper transition-colors duration-150 hover:bg-flag-ink"
           >
-            Fiyat al
-            <span className="sr-only">: {item.name} (WhatsApp, yeni sekmede açılır)</span>
+            {hasPrice ? `Günlük ${item.dailyPrice}, WhatsApp'tan yazın` : "Fiyatı WhatsApp'tan sorun"}
+            <span className="sr-only">: {item.name} (yeni sekmede açılır)</span>
           </a>
+          {credit && (
+            <a
+              href={credit.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex min-h-11 items-center text-small underline underline-offset-4"
+            >
+              Fotoğraf: {credit.author}, {credit.source}
+            </a>
+          )}
         </div>
       </div>
     </article>

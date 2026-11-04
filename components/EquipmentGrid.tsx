@@ -1,20 +1,12 @@
 import { equipment } from "@/content/business";
 import { EquipmentCard } from "@/components/EquipmentCard";
-import { Reveal } from "@/components/Reveal";
 
-export function EquipmentGrid({ limit }: { limit?: number }) {
-  const items = typeof limit === "number" ? equipment.slice(0, limit) : equipment;
-  const [first, ...rest] = items;
-  if (!first) return null;
+/** Dört ekipman, ikişerli yarım ekran alanlar: fotoğraf ve düz renk kenar kenara, kart yok. */
+export function EquipmentGrid() {
   return (
-    <div className="grid gap-5 md:grid-cols-3">
-      <Reveal className="md:col-span-3">
-        <EquipmentCard item={first} featured />
-      </Reveal>
-      {rest.map((item, i) => (
-        <Reveal key={item.id} delay={i * 0.08} className="flex">
-          <EquipmentCard item={item} />
-        </Reveal>
+    <div className="grid md:grid-cols-2">
+      {equipment.map((item, i) => (
+        <EquipmentCard key={item.id} item={item} index={i} />
       ))}
     </div>
   );

@@ -1,9 +1,13 @@
 import type { Metadata } from "next";
-import { MapPin, MessageCircle, Phone } from "lucide-react";
+import { MessageCircle, Phone } from "lucide-react";
 import { business } from "@/content/business";
+import { AskLink } from "@/components/AskLink";
 import { RentalBuilder } from "@/components/RentalBuilder";
 import { MapEmbed } from "@/components/MapEmbed";
-import { HoursList, withPlaceholders } from "@/components/HoursList";
+import { HoursList } from "@/components/HoursList";
+import { PisteHeading } from "@/components/ui/Section";
+import { ButtonLink } from "@/components/ui/Button";
+import { isOpen } from "@/lib/placeholders";
 import { waLink } from "@/lib/whatsapp";
 
 export const metadata: Metadata = {
@@ -11,77 +15,59 @@ export const metadata: Metadata = {
   description: `${business.displayName}: ${business.address.full}. Telefon ${business.phone.display}, WhatsApp, çalışma saatleri ve harita.`,
 };
 
-const linkCls =
-  "inline-flex min-h-11 items-center gap-2 font-medium text-night underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-flag-ink";
-const h2Cls = "font-display text-lg font-bold uppercase tracking-wide text-night";
-
 export default function IletisimPage() {
   return (
-    <main id="icerik" className="bg-glacier">
-      <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 md:py-20">
-        <p className="text-sm font-semibold uppercase tracking-widest text-flag-ink">İletişim</p>
-        <h1 className="mt-2 font-display text-4xl font-extrabold leading-none tracking-tight text-night sm:text-5xl">
-          Bize ulaşın
-        </h1>
-        <p className="mt-4 max-w-xl text-lg text-muted">
-          {business.city}, {business.district}. En hızlı yol WhatsApp: ekipmanı ve günleri seçin, mesaj hazır gelsin.
-        </p>
-
-        <div className="mt-10 grid gap-10 lg:grid-cols-[1fr_1.1fr]">
-          <div className="flex flex-col gap-8">
-            <section aria-labelledby="adres">
-              <h2 id="adres" className={h2Cls}>
-                Adres
-              </h2>
-              <div className="mt-2 flex gap-3">
-                <MapPin aria-hidden className="mt-1 size-5 shrink-0 text-flag-ink" />
-                <address className="not-italic text-night">
-                  <span className="block">{business.address.full}</span>
-                  <span className="mt-1 block text-sm text-muted">{withPlaceholders(business.address.detail)}</span>
-                </address>
-              </div>
-            </section>
-
-            <ul className="flex flex-col gap-1">
-              <li>
-                <a href={`tel:${business.phone.e164}`} className={linkCls}>
-                  <Phone aria-hidden className="size-5 text-flag-ink" />
-                  {business.phone.display}
-                </a>
-              </li>
-              <li>
-                <a href={waLink()} target="_blank" rel="noopener noreferrer" className={linkCls}>
-                  <MessageCircle aria-hidden className="size-5 text-flag-ink" />
-                  WhatsApp ile yazın
-                  <span className="sr-only"> (yeni sekmede açılır)</span>
-                </a>
-              </li>
-            </ul>
-
-            <section aria-labelledby="saatler">
-              <h2 id="saatler" className={h2Cls}>
-                Çalışma saatleri
-              </h2>
-              <HoursList tone="light" />
-              <p className="mt-2 text-sm text-muted">Sezon: {withPlaceholders(business.season)}</p>
-            </section>
-
-            <section aria-labelledby="konum">
-              <h2 id="konum" className={`mb-3 ${h2Cls}`}>
-                Konum
-              </h2>
-              <MapEmbed />
-            </section>
+    <main id="icerik" className="bg-glacier text-ink">
+      <section className="section-y pt-10 lg:pt-16">
+        <div className="wrap grid gap-10 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-16">
+          <div>
+            <PisteHeading as="h1" n={1} piste="green">
+              Bize ulaşın
+            </PisteHeading>
+            <address className="display mt-8 text-[clamp(2.25rem,1.6rem+2.6vw,4.25rem)] not-italic">
+              <span className="block">{business.address.street}</span>
+              <span className="block">
+                {business.address.postalCode} {business.address.locality} / {business.address.region}
+              </span>
+            </address>
+            {isOpen(business.address.detail) && (
+              <p className="mt-2">
+                Sokak ve tarif için <AskLink question="Dükkanınıza nasıl gelebilirim, sokak ve tarifi yazabilir misiniz?" />
+              </p>
+            )}
+            <div className="mt-6 flex flex-wrap gap-2">
+              <ButtonLink href={waLink()} external>
+                <MessageCircle aria-hidden className="size-5" />
+                WhatsApp ile yazın
+                <span className="sr-only"> (yeni sekmede açılır)</span>
+              </ButtonLink>
+              <ButtonLink href={`tel:${business.phone.e164}`} variant="shade">
+                <Phone aria-hidden className="size-5" />
+                {business.phone.display}
+              </ButtonLink>
+            </div>
+            <h2 className="display mt-10 text-[clamp(2rem,1.6rem+1.6vw,3rem)]">Çalışma saatleri</h2>
+            <div className="mt-3">
+              <HoursList />
+            </div>
+            {isOpen(business.season) && (
+              <p className="mt-3">
+                Sezon tarihleri için <AskLink question="Bu sezon ne zaman açılıyorsunuz?" />
+              </p>
+            )}
           </div>
-
-          <section aria-labelledby="teklif" className="lg:sticky lg:top-24 lg:self-start">
-            <h2 id="teklif" className={`mb-3 ${h2Cls}`}>
-              Fiyat al
-            </h2>
-            <RentalBuilder variant="page" />
-          </section>
+          <MapEmbed />
         </div>
-      </div>
+      </section>
+
+      <section aria-labelledby="teklif" className="section-y bg-glacier-2">
+        <div className="wrap">
+          <PisteHeading id="teklif" n={2} piste="blue" className="mb-4">
+            Skipasınızı doldurun
+          </PisteHeading>
+          <RentalBuilder />
+        </div>
+      </section>
     </main>
   );
 }

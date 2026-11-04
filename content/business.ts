@@ -6,6 +6,7 @@
  * yer tutucusu kullanılır. Kaynak (2026-11-01): Google Haritalar kaydı "Atalay Kayak Evi"
  * (Kayak Kiralama Hizmeti, 4,8 / 83 yorum, "Web sitesi ekleyin" boş).
  * Ekipman markası, fiyat, beden aralığı UYDURULMAZ.
+ * Yer tutucular ziyaretçiye gösterilmez; lib/placeholders.ts bunları "WhatsApp'tan sorun" yönlendirmesine çevirir.
  */
 
 export type Source = "google" | "dogrulanacak" | "genel";
@@ -192,6 +193,8 @@ export const faqs: { q: string; a: string; source: Source }[] = [
 export const demo = {
   label: "Demo",
   note: "Bu sayfa Atalay Kayak Evi için hazırlanmış bir tasarım önizlemesidir; henüz işletme tarafından onaylanmamıştır.",
+  mapNote: "Harita çizimi temsilidir, Palandöken'in gerçek pist haritası değildir.",
+  photoNote: "Fotoğraflar örnektir, işletmedeki ekipmanı göstermez.",
 };
 
 export const nav = [
