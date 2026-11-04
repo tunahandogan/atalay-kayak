@@ -46,7 +46,7 @@ export const business = {
     { days: "Sezon dışı", time: "[DOLDURULACAK: açık mı, saatler]" },
   ],
   season: "[DOLDURULACAK: sezon açılış tarihi, ör. Aralık ortası]",
-  google: { rating: 4.8, reviewCount: 83, checkedAt: "2026-11-01" },
+  google: { rating: 4.8, reviewCount: 88, checkedAt: "2026-11-04" },
   website: null as string | null,
   logo: null as string | null,
 } as const;
