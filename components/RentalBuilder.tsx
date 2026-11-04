@@ -2,7 +2,7 @@
 
 import { useId, useMemo, useState, useSyncExternalStore } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { Check, ChevronDown, Minus, Plus } from "lucide-react";
+import { CalendarDays, Check, ChevronDown, Minus, Plus } from "lucide-react";
 import { business, equipment, levels } from "@/content/business";
 import { rentalDays, rentalMessage, waLink } from "@/lib/whatsapp";
 
@@ -40,6 +40,47 @@ function WhatsAppIcon({ className }: { className?: string }) {
   );
 }
 
+function formatDate(iso: string) {
+  const [y, m, d] = iso.split("-").map(Number);
+  return new Intl.DateTimeFormat("tr-TR", { day: "numeric", month: "short", year: "numeric" }).format(new Date(y, m - 1, d));
+}
+
+/**
+ * Görünümü biz çizeriz; gerçek tarih alanı görünmez hâlde üstte durur ve telefonun kendi seçicisini açar.
+ * Böylece iOS'un küçülmeyen yerel kutusu yerleşimi bozamaz, her tarayıcıda aynı görünür.
+ */
+function DateField({
+  label,
+  value,
+  min,
+  onChange,
+}: {
+  label: string;
+  value: string;
+  min?: string;
+  onChange: (value: string) => void;
+}) {
+  return (
+    <label className="relative flex h-14 min-w-0 cursor-pointer flex-col justify-center rounded-xl border border-line bg-glacier px-3 has-[input:focus-visible]:outline-2 has-[input:focus-visible]:outline-offset-2 has-[input:focus-visible]:outline-flag-ink">
+      <span className="text-xs leading-4 text-muted">{label}</span>
+      <span className="flex min-w-0 items-center justify-between gap-1.5 text-sm leading-5">
+        <span className={`truncate ${value ? "font-semibold text-night" : "text-muted"}`}>
+          {value ? formatDate(value) : "Tarih seç"}
+        </span>
+        <CalendarDays aria-hidden className="size-4 shrink-0 text-flag" />
+      </span>
+      <input
+        type="date"
+        aria-label={label}
+        value={value}
+        min={min || undefined}
+        onChange={(e) => onChange(e.target.value)}
+        className="date-input"
+      />
+    </label>
+  );
+}
+
 export function RentalBuilder({ variant = "page" }: { variant?: "hero" | "page" }) {
   const compact = variant === "hero";
   const reduce = useReducedMotion();
@@ -67,7 +108,8 @@ export function RentalBuilder({ variant = "page" }: { variant?: "hero" | "page" 
   const legend = "mb-2 flex items-baseline gap-2 font-display text-sm font-bold uppercase tracking-wide text-night";
   const num = "inline-flex size-5 items-center justify-center rounded-full bg-flag text-xs font-bold text-white";
   const focus = "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-flag-ink";
-  const field = `h-11 w-full rounded-xl border border-line bg-glacier px-3 text-sm text-night ${focus}`;
+  // 16px: iOS, daha küçük yazılı alana dokununca sayfayı yakınlaştırır
+  const field = `h-11 w-full rounded-xl border border-line bg-glacier px-3 text-base text-night ${focus}`;
 
   const toggle = (id: string) => setItems((cur) => (cur.includes(id) ? cur.filter((x) => x !== id) : [...cur, id]));
 
@@ -182,18 +224,20 @@ export function RentalBuilder({ variant = "page" }: { variant?: "hero" | "page" 
         </div>
       </fieldset>
 
-      <div className="grid gap-4 sm:grid-cols-[auto_1fr] sm:items-start sm:gap-6">
+      {/* Geniş kapta üç eşit sütun: kişi, alış, dönüş aynı genişlik ve yükseklikte; darda alt alta */}
+      <div className="@container">
+      <div className="grid gap-4 @lg:grid-cols-3 @lg:gap-3">
         <fieldset className="min-w-0">
           <legend className={legend}>
             <span className={num}>2</span> Kişi sayısı
           </legend>
-          <div className="inline-flex items-center rounded-xl border border-line bg-glacier">
+          <div className="flex h-14 items-center justify-between rounded-xl border border-line bg-glacier">
             <button
               type="button"
               aria-label="Kişi sayısını azalt"
               disabled={people <= 1}
               onClick={() => setPeople((p) => Math.max(1, p - 1))}
-              className={`flex size-11 items-center justify-center rounded-xl disabled:opacity-35 ${focus}`}
+              className={`flex h-full w-12 items-center justify-center rounded-xl disabled:opacity-35 ${focus}`}
             >
               <Minus aria-hidden className="size-4" />
             </button>
@@ -205,36 +249,38 @@ export function RentalBuilder({ variant = "page" }: { variant?: "hero" | "page" 
               aria-label="Kişi sayısını artır"
               disabled={people >= 20}
               onClick={() => setPeople((p) => Math.min(20, p + 1))}
-              className={`flex size-11 items-center justify-center rounded-xl disabled:opacity-35 ${focus}`}
+              className={`flex h-full w-12 items-center justify-center rounded-xl disabled:opacity-35 ${focus}`}
             >
               <Plus aria-hidden className="size-4" />
             </button>
           </div>
         </fieldset>
 
-        <fieldset className="min-w-0">
+        <fieldset className="min-w-0 @lg:col-span-2">
           <legend className={legend}>
             <span className={num}>3</span> Tarihler
           </legend>
           <div className="grid grid-cols-2 gap-3">
-            <label className="block">
-              <span className="mb-1 block text-xs text-muted">Alış</span>
-              <input
-                type="date"
-                value={from}
-                min={min}
-                onChange={(e) => {
-                  const v = e.target.value;
-                  setFrom(v);
-                  if (to && v && to < v) setTo(v);
-                }}
-                className={field}
-              />
-            </label>
-            <label className="block">
-              <span className="mb-1 block text-xs text-muted">Dönüş</span>
-              <input type="date" value={to} min={from || min} onChange={(e) => setTo(e.target.value)} className={field} />
-            </label>
+            {/* iOS seçicisi `min`i uygulamaz; geçmiş tarih burada düzeltilir */}
+            <DateField
+              label="Alış"
+              value={from}
+              min={min}
+              onChange={(v) => {
+                const next = v && min && v < min ? min : v;
+                setFrom(next);
+                if (to && next && to < next) setTo(next);
+              }}
+            />
+            <DateField
+              label="Dönüş"
+              value={to}
+              min={from || min}
+              onChange={(v) => {
+                const floor = from || min;
+                setTo(v && floor && v < floor ? floor : v);
+              }}
+            />
           </div>
           <p aria-live="polite" className="mt-2 min-h-5 text-sm text-muted">
             {days ? (
@@ -246,6 +292,7 @@ export function RentalBuilder({ variant = "page" }: { variant?: "hero" | "page" 
             )}
           </p>
         </fieldset>
+      </div>
       </div>
 
       {compact && (

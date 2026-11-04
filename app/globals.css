@@ -146,3 +146,29 @@ body {
   }
   .snow-canvas { display: none !important; }
 }
+
+/* Tarih alanı: görünmez ama dokunulabilir; görünümü DateField çizer. */
+.date-input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  opacity: 0;
+  font-size: 16px; /* iOS yakınlaştırmasın */
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.date-input::-webkit-calendar-picker-indicator {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  cursor: pointer;
+}
